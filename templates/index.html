@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat App</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .chat-container {
+        max-width: 600px;
+        margin: 20px auto;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        background-color: #f9f9f9;
+      }
+      .message {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+      }
+      .user-message {
+        background-color: #007bff;
+        color: white;
+        text-align: right;
+      }
+      .response-message {
+        background-color: #28a745;
+        color: white;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <div id="chatBox" class="mb-3"></div>
+      <div class="form-inline">
+        <input
+          type="text"
+          id="messageInput"
+          class="form-control mr-2 flex-grow-1"
+          placeholder="Type a message..."
+        />
+        <button id="sendButton" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+
+    <!-- Bootstrap and jQuery libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#sendButton").click(function () {
+          var message = $("#messageInput").val();
+          if (message) {
+            displayMessage(message, "user-message");
+            $("#messageInput").val(""); // Clear input after sending
+            sendMessage(message);
+          }
+        });
+
+        function displayMessage(message, className) {
+          var formattedMessage = marked.parse(message);
+          var messageElement = $("<div></div>")
+            .addClass("message")
+            .addClass(className)
+            .html(formattedMessage);
+          $("#chatBox").append(messageElement);
+        }
+
+        function sendMessage(message) {
+          $.ajax({
+            type: "POST",
+            url: "/resumebuilder/chat/",
+            data: JSON.stringify({ message: message, session_id: "A" }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+              displayMessage(response.response, "response-message");
+            },
+            error: function (err) {
+              console.error("Error sending message", err);
+            },
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
