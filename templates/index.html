@@ -76,8 +76,8 @@
         function sendMessage(message) {
           $.ajax({
             type: "POST",
-            url: "/resumebuilder/chat/",
-            data: JSON.stringify({ message: message, session_id: "A" }),
+            url: "/chatbot/chat/",
+            data: JSON.stringify({ message: message, session_id: "E" }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
